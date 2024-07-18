@@ -10,8 +10,7 @@ import { useRouter } from 'next/navigation';
 import { MaterialDetailsForm } from '@/app/types';
 import ActionMaster from '../material.action';
 import { useRef, useState } from 'react';
-import { ValidatedTextField } from './validate.text.field';
-import './validators';
+
 
 
 export default function FormPropsTextFields() {
@@ -56,15 +55,15 @@ export default function FormPropsTextFields() {
         await validateBeforeSave()
     }
 
-    const formValid = useRef({ name: false, email: false });
-    const handleSubmit = (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-        if (Object.values(formValid.current).every(isValid => isValid)) {
-            alert("Form is valid! Submitting the form...");
-        } else {
-            alert("Form is invalid! Please check the fields...");
-        }
-    };
+    // const formValid = useRef({ name: false, email: false });
+    // const handleSubmit = (e: { preventDefault: () => void; }) => {
+    //     e.preventDefault();
+    //     if (Object.values(formValid.current).every(isValid => isValid)) {
+    //         alert("Form is valid! Submitting the form...");
+    //     } else {
+    //         alert("Form is invalid! Please check the fields...");
+    //     }
+    // };
 
 
 
@@ -78,19 +77,7 @@ export default function FormPropsTextFields() {
             noValidate
             autoComplete="off" >
 
-            <div>
 
-                <ValidatedTextField
-                    label="Name"
-                    validator={nameValidator(value)}
-                    onChange={isValid => (formValid.current.name = isValid)}
-                />
-                <ValidatedTextField
-                    label="Email"
-                    validator={emailValidator}
-                    onChange={isValid => (formValid.current.email = isValid)}
-                />
-            </div>
 
             <div>
                 <TextField
@@ -135,7 +122,7 @@ export default function FormPropsTextFields() {
 
                 <Stack direction="row" spacing={2} justifyContent="right">
                     <Button variant="contained" startIcon={<SaveIcon />}
-                        onClick={(e) => handleSubmit(e)}>
+                        onClick={(e) => handleSave(e)}>
                         Add
                     </Button>
 
