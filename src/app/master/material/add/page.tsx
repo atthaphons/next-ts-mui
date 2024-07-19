@@ -8,7 +8,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import BackIcon from '@mui/icons-material/Backspace';
 import { useRouter } from 'next/navigation';
 import { MaterialDetailsForm } from '@/app/types';
-import ActionMaster from '../material.action';
+import { Add, Edit } from '../material.action.fn';
 import { useRef, useState } from 'react';
 
 
@@ -43,7 +43,7 @@ export default function FormPropsTextFields() {
         if (nameError) {
             alert("Form is invalid! Please check the fields...");
         } else {
-            const saveAdd = await ActionMaster.Add(`https://668f4c3a80b313ba091794a6.mockapi.io/material`, userData);
+            const saveAdd = await Add(userData);
             alert("Save Success id = " + JSON.stringify(saveAdd));
             router.push('../../master/material')
         }

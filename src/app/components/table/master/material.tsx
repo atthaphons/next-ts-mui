@@ -33,7 +33,7 @@ const TableMaterial: React.FC<TableProps> = ({ resultsdata }) => {
     },
     {
       name: "cmpyCd",
-      label: "COMPABY",
+      label: "COMPANY",
 
     }
   ];
@@ -44,14 +44,12 @@ const TableMaterial: React.FC<TableProps> = ({ resultsdata }) => {
     responsive: ""
   };
   return (
-    <>
-      <MUIDataTable
-        title={"Search Result"}
-        data={resultsdata}
-        columns={columns}
-        options={options}
-      />
-    </>
+    <MUIDataTable
+      title={"Search Result"}
+      data={resultsdata}
+      columns={columns}
+      options={options}
+    />
   );
 };
 

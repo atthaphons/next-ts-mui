@@ -1,17 +1,10 @@
-import { Component, MouseEvent } from 'react'
-
-import { fetcherAdd } from '@/app/lib/fetcher';
-import { MaterialDetailsForm } from '@/app/types';
-
-
+import { Component } from 'react'
+import { create, fetcher } from '@/app/lib/fetcher';
+import { MaterialMasterSearchResult } from '@/app/types';
 
 export class ActionMaster extends Component {
-
     static async Add(path: string, object: object): Promise<string> {
-        console.log("Add " + path, object)
-        const res = await fetcherAdd(path, object);
-        console.log("### res data####" + JSON.stringify(res.data))
-        console.log("### res status####" + JSON.stringify(res.status))
+        await create(path, object);
         return "add success"
     }
     static async Edit(path: string, object: object): Promise<string> {
@@ -22,9 +15,12 @@ export class ActionMaster extends Component {
         console.log("Delete ", path, id)
         return "delete success"
     }
-    static async Search(path: string, object: object): Promise<string> {
-        console.log("Search ", path, object)
-        return "search success"
+    static async Search(): Promise<MaterialMasterSearchResult[]> {
+        const res = await fetcher(`https://668f4c3a80b313ba091794a6.mockapi.io/material`);
+        if (!res) {
+            throw new Error('Failed to fetch data');
+        }
+        return (res?.data)
     }
 }
 
