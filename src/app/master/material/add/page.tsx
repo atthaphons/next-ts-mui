@@ -3,27 +3,32 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { Button, Stack } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Stack } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import BackIcon from '@mui/icons-material/Backspace';
 import { useRouter } from 'next/navigation';
 import { MaterialDetailsForm } from '@/app/types';
 import { Add, Edit } from '../material.action.fn';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Search } from '@/app/master/material/material.action.fn'
 
 
 
 export default function FormPropsTextFields() {
-    const [userData, setUserData] = useState<MaterialDetailsForm[]>([]);
+    const [materialData, setMaterialData] = useState<MaterialDetailsForm[]>([]);
+
+    const [dropdownData, setDropdownData] = useState<MaterialDetailsForm[]>([]);
+
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
-        setUserData({ ...userData, [e.target.name]: e.target.value });
+        setMaterialData({ ...materialData, [e.target.name]: e.target.value });
     };
 
-    const [name, setName] = useState("");
+    const [matCdValue, setMatCdValue] = useState("");
     const [nameError, setNameError] = useState(false);
     const [nameErrorMsg, setNameErrorMsg] = useState("");
-    const handleNameChange = (e: { target: { value: string }; }) => {
-        setName(e.target.value);
+    const handleValidateMatCodeChange = (e: { target: { name: any; value: any; }; }) => {
+        setMatCdValue(e.target.value);
+        setMaterialData({ ...materialData, [e.target.name]: e.target.value });
         if (e.target.value.length < 3) {
             setNameErrorMsg("Name must be at least 3 characters long");
             setNameError(true);
@@ -40,10 +45,13 @@ export default function FormPropsTextFields() {
     };
 
     const validateBeforeSave = async () => {
+
+
+        console.log("validateBeforeSave =>", JSON.stringify(materialData))
         if (nameError) {
             alert("Form is invalid! Please check the fields...");
         } else {
-            const saveAdd = await Add(userData);
+            const saveAdd = await Add(materialData);
             alert("Save Success id = " + JSON.stringify(saveAdd));
             router.push('../../master/material')
         }
@@ -55,19 +63,21 @@ export default function FormPropsTextFields() {
         await validateBeforeSave()
     }
 
-    // const formValid = useRef({ name: false, email: false });
-    // const handleSubmit = (e: { preventDefault: () => void; }) => {
-    //     e.preventDefault();
-    //     if (Object.values(formValid.current).every(isValid => isValid)) {
-    //         alert("Form is valid! Submitting the form...");
-    //     } else {
-    //         alert("Form is invalid! Please check the fields...");
-    //     }
-    // };
+
+    const fetchDropDown = async () => {
+        const data = await Search();
+        setDropdownData(data);
+    }
+
+    useEffect(() => {
+        fetchDropDown();
+    }, [])
 
 
+    const handleChangeList = (event: SelectChangeEvent) => {
+        setMaterialData({ ...materialData, [event.target.name]: event.target.value });
 
-
+    };
     return (
         <Box
             component="form"
@@ -77,47 +87,61 @@ export default function FormPropsTextFields() {
             noValidate
             autoComplete="off" >
 
+            <div>
 
-
+            </div>
             <div>
                 <TextField
                     disabled
                     id="outlined-required"
                     label="ID"
-
-
                 />
+
+                <FormControl sx={{ m: 1, width: 300 }}>
+                    <InputLabel id="demo-multiple-name-label">Material Name</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        name='matName'
+                        value={materialData.matName}
+                        label="matName"
+                        onChange={handleChangeList}
+                    >
+                        {dropdownData.map((data, index) => {
+                            return (
+                                <MenuItem key={index} value={data.matName}>
+                                    {data.matName}
+                                </MenuItem>
+                            )
+                        })}
+                    </Select>
+                </FormControl>
+
                 <TextField
                     required
                     id="outlined-required"
                     label="Material Code"
                     name='matCd'
-                    value={name}
-                    onChange={handleNameChange}
+                    value={matCdValue}
+                    onChange={handleValidateMatCodeChange}
                     error={nameError}
                     helperText={nameErrorMsg}
                 />
-
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Material Name"
-                    name='matName'
-                    value={userData.matName}
-                    onChange={handleChange}
-                />
-
                 <TextField
                     required
                     id="outlined-required"
                     label="Company Code"
                     name='cmpyCd'
-                    value={userData.cmpyCd}
+                    value={materialData.cmpyCd}
                     onChange={handleChange}
 
                 />
 
+
+
             </div>
+
+
             <Grid2>
 
                 <Stack direction="row" spacing={2} justifyContent="right">
