@@ -22,6 +22,8 @@ import React, { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import { parse } from "tldts";
+import { Avatar, Button, FormControl, InputLabel, Menu, MenuItem, Select, SelectChangeEvent, Tooltip } from '@mui/material';
+import page from '../page';
 
 const drawerWidth = 240;
 
@@ -125,6 +127,11 @@ export default function RootLayout({
     setOpen(false);
   };
 
+  const [operation, setOperation] = React.useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setOperation(event.target.value);
+  };
 
 
   return (
@@ -145,7 +152,80 @@ export default function RootLayout({
           <Typography variant="h6" noWrap component="div">
             {text}
           </Typography>
+
+          {/* <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={null}
+
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(true)}
+            // onClose={() => alert('ss')}
+
+            >
+              {['GG', 'FF'].map((setting) => (
+                <MenuItem key={setting} >
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+
+          </Box> */}
+
+          <Typography variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}>
+
+            LOGO
+            {/* 
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <InputLabel id="demo-select-small-label">Operation Name</InputLabel>
+              <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                value={operation}
+                label="Age"
+              // onChange={handleChange}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={10}>STM</MenuItem>
+                <MenuItem value={20}>TMT</MenuItem>
+
+              </Select>
+            </FormControl> */}
+          </Typography>
+
         </Toolbar>
+
+
+
       </AppBar>
       <Drawer
         sx={{
@@ -160,6 +240,8 @@ export default function RootLayout({
         anchor="left"
         open={open}
       >
+
+
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
