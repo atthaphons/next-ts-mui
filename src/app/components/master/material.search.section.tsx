@@ -49,7 +49,7 @@ const SearchSection: React.FC<MaterialProps> = () => {
                         onClick={(e) => handleSearch(e)}
 
                     />
-                    <Button variant="contained" startIcon={<ClearIcon />}>
+                    <Button variant="contained" onClick={() => alert("cancel")} startIcon={<ClearIcon />}>
                         Cancel
                     </Button>
                 </Stack>
