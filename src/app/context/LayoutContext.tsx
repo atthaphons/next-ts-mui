@@ -18,9 +18,7 @@ interface LayoutProviderProps {
 export const LayoutProvider: FC<LayoutProviderProps> = ({ children }) => {
     const [title, setTitle] = useState('Default Title');
 
-    useEffect{
 
-    }
 
     return (
         <LayoutContext.Provider value={{ title, setTitle }}>
