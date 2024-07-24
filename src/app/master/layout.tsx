@@ -24,6 +24,7 @@ import Link from "next/link";
 import { parse } from "tldts";
 import { Avatar, Button, FormControl, InputLabel, Menu, MenuItem, Select, SelectChangeEvent, Tooltip } from '@mui/material';
 import page from '../page';
+import HeaderMaster from './template/header';
 
 const drawerWidth = 240;
 
@@ -95,7 +96,7 @@ export default function RootLayout({
 }) {
 
   const pathname = usePathname();
-  const [text, setText] = useState();
+  const [text, setText] = useState('');
 
   const renderScreenText = () => {
     switch (pathname) {
@@ -149,9 +150,10 @@ export default function RootLayout({
 
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {text}
-          </Typography>
+
+
+
+          <HeaderMaster textMenu={text}></HeaderMaster>
 
           {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

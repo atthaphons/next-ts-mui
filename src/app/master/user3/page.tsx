@@ -7,6 +7,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 
 
+
 const Home = () => {
     const initialTitle = 'User Information Form';
     const profiles = ['Admin', 'User', 'Guest'];

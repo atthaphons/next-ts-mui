@@ -1,15 +1,25 @@
+"use client"
+import React, { useContext, ReactNode } from 'react';
+import { LayoutContext } from './context/LayoutContext';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { title } = useContext(LayoutContext);
+  console.log("title ===>", title)
+
   return (
-    <html lang="en">
+    <html>
       <body>
-
+        <header>{title}</header>
         <main>{children}</main>
       </body>
     </html>
-  )
-}
+
+
+  );
+};
+
+export default Layout;
