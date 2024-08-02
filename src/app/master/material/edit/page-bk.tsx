@@ -8,7 +8,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {
-    GridRowsProp,
     GridRowModesModel,
     GridRowModes,
     DataGrid,
@@ -27,52 +26,32 @@ import {
     randomId,
     randomArrayItem,
 } from '@mui/x-data-grid-generator';
+import { fetcher } from '@/app/lib/fetcher';
+import { useEffect } from 'react';
+import { MaterialMasterSearchResult } from '@/app/types';
 
 const roles = ['Market', 'Finance', 'Development'];
 const randomRole = () => {
     return randomArrayItem(roles);
 };
 
-const initialRows: GridRowsProp = [
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 25,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 36,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 19,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 28,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-    {
-        id: randomId(),
-        name: randomTraderName(),
-        age: 23,
-        joinDate: randomCreatedDate(),
-        role: randomRole(),
-    },
-];
+
+const searchDataResult = async () => {
+
+
+    console.log("searchDataResult")
+    const res = await fetcher(`https://668f4c3a80b313ba091794a6.mockapi.io/material`);
+    if (!res) {
+        throw new Error('Failed to fetch data');
+    }
+    return (res?.data)
+};
+
+
+
 
 interface EditToolbarProps {
-    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+    setRows: (newRows: (oldRows: MaterialMasterSearchResult) => MaterialMasterSearchResult) => void;
     setRowModesModel: (
         newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
     ) => void;
@@ -81,9 +60,11 @@ interface EditToolbarProps {
 function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
 
+
+
     const handleClick = () => {
         const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+        setRows((oldRows) => [...oldRows, { id, matCd: '', matName: '', cmpyCd: '', isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -100,13 +81,38 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export default function FullFeaturedCrudGrid() {
+    console.log("aaaasss")
 
 
-
-
-
-    const [rows, setRows] = React.useState(initialRows);
+    const [rows, setRows] = React.useState<MaterialMasterSearchResult>([]);
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+
+
+
+    useEffect(() => {
+
+        console.log("useEffect")
+        async function fetchMyAPI() {
+
+            const res = await fetcher(`https://668f4c3a80b313ba091794a6.mockapi.io/material`);
+            if (!res) {
+                throw new Error('Failed to fetch data');
+            }
+            console.log("A", JSON.stringify(res?.data))
+            setRows(res?.data);
+
+            console.log("A", JSON.stringify(rows))
+        }
+        // Do something here...
+        // searchDataResult
+        fetchMyAPI();
+        console.log("B", JSON.stringify(rows))
+
+    }, []);
+
+
+    console.log("BBBB")
+    console.log(JSON.stringify(rows))
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -123,7 +129,8 @@ export default function FullFeaturedCrudGrid() {
     };
 
     const handleDeleteClick = (id: GridRowId) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        //call API Delete
+        setRows(rows.filter((row: { id: GridRowId; }) => row.id !== id));
     };
 
     const handleCancelClick = (id: GridRowId) => () => {
@@ -148,31 +155,30 @@ export default function FullFeaturedCrudGrid() {
         setRowModesModel(newRowModesModel);
     };
 
+
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Name', width: 180, editable: true },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
-            width: 80,
-            align: 'left',
-            headerAlign: 'left',
-            editable: true,
+            field: "id",
+            headerName: "MATERIAL ID",
+
         },
         {
-            field: 'joinDate',
-            headerName: 'Join date',
-            type: 'date',
-            width: 180,
+            field: "matCd",
+            headerName: "MATERIAL CODE",
             editable: true,
+
         },
         {
-            field: 'role',
-            headerName: 'Department',
-            width: 220,
+            field: "matName",
+            headerName: "MATERIAL NAME",
             editable: true,
-            type: 'singleSelect',
-            valueOptions: ['Market', 'Finance', 'Development'],
+
+        },
+        {
+            field: "cmpyCd",
+            headerName: "COMPABY",
+            editable: true,
+
         },
         {
             field: 'actions',
@@ -188,6 +194,7 @@ export default function FullFeaturedCrudGrid() {
                         <GridActionsCellItem
                             icon={<SaveIcon />}
                             label="Save"
+                            key={id}
                             sx={{
                                 color: 'primary.main',
                             }}
@@ -196,6 +203,7 @@ export default function FullFeaturedCrudGrid() {
                         <GridActionsCellItem
                             icon={<CancelIcon />}
                             label="Cancel"
+                            key={id}
                             className="textPrimary"
                             onClick={handleCancelClick(id)}
                             color="inherit"
@@ -208,11 +216,13 @@ export default function FullFeaturedCrudGrid() {
                         icon={<EditIcon />}
                         label="Edit"
                         className="textPrimary"
+                        key={id}
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
+                        key={id}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
                         color="inherit"
@@ -221,6 +231,84 @@ export default function FullFeaturedCrudGrid() {
             },
         },
     ];
+
+    // const columns: GridColDef[] = [
+    //     { field: 'name', headerName: 'Name', width: 180, editable: true },
+    //     {
+    //         field: 'matCd',
+    //         headerName: 'Age',
+    //         type: 'number',
+    //         width: 80,
+    //         align: 'left',
+    //         headerAlign: 'left',
+    //         editable: true,
+    //     },
+    //     {
+    //         field: 'matName',
+    //         headerName: 'Join date',
+    //         type: 'date',
+    //         width: 180,
+    //         editable: true,
+    //     },
+    //     {
+    //         field: 'role',
+    //         headerName: 'Department',
+    //         width: 220,
+    //         editable: true,
+    //         type: 'singleSelect',
+    //         valueOptions: ['Market', 'Finance', 'Development'],
+    //     },
+    //     {
+    //         field: 'actions',
+    //         type: 'actions',
+    //         headerName: 'Actions',
+    //         width: 100,
+    //         cellClassName: 'actions',
+    //         getActions: ({ id }) => {
+    //             const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+    //             if (isInEditMode) {
+    //                 return [
+    //                     <GridActionsCellItem
+    //                         icon={<SaveIcon />}
+    //                         label="Save"
+    //                         key={id}
+    //                         sx={{
+    //                             color: 'primary.main',
+    //                         }}
+    //                         onClick={handleSaveClick(id)}
+    //                     />,
+    //                     <GridActionsCellItem
+    //                         icon={<CancelIcon />}
+    //                         label="Cancel"
+    //                         key={id}
+    //                         className="textPrimary"
+    //                         onClick={handleCancelClick(id)}
+    //                         color="inherit"
+    //                     />,
+    //                 ];
+    //             }
+
+    //             return [
+    //                 <GridActionsCellItem
+    //                     icon={<EditIcon />}
+    //                     label="Edit"
+    //                     key={id}
+    //                     className="textPrimary"
+    //                     onClick={handleEditClick(id)}
+    //                     color="inherit"
+    //                 />,
+    //                 <GridActionsCellItem
+    //                     icon={<DeleteIcon />}
+    //                     label="Delete"
+    //                     key={id}
+    //                     onClick={handleDeleteClick(id)}
+    //                     color="inherit"
+    //                 />,
+    //             ];
+    //         },
+    //     },
+    // ];
 
     return (
         <Box

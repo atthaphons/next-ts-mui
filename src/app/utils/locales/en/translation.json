@@ -1,0 +1,15 @@
+{
+    "username": "Username *",
+    "password": "Password *",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "operationPlant": "Operation Plant",
+    "home": {
+        "welcome": "Welcome to the Home Page"
+    },
+    "about": {
+        "title": "About Us",
+        "description": "This is the about page."
+    },
+    "searchCriteria": "Search Criteria"
+}

@@ -1,25 +1,42 @@
-"use client"
-import React, { useContext, ReactNode } from 'react';
-import { LayoutContext } from './context/LayoutContext';
+"use client";
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { title } = useContext(LayoutContext);
-  console.log("title ===>", title)
+import { Container, Box } from "@mui/material";
+import Header from "@/app/components/templates/header";
+import Footer from "@/app/components/templates/footer";
+import { Provider } from "react-redux";
+import { SessionProvider } from "next-auth/react";
+import { store } from "@/app/store/store";
+function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
 
   return (
     <html>
+      <link rel="icon" href="data:,"></link>
       <body>
-        <header>{title}</header>
-        <main>{children}</main>
+
+        <SessionProvider>
+          <Provider store={store}>
+            <Header />
+            <Container maxWidth={false} disableGutters={true}>
+              <Box sx={{ height: "100vh" }}>{children}</Box>
+            </Container>
+            <Footer />
+          </Provider>
+        </SessionProvider>
+
       </body>
     </html>
-
-
   );
+}
+
+export const config = {
+  i18n: {
+    locales: ['en', 'th'],
+    defaultLocale: 'en',
+  },
 };
 
-export default Layout;
+export default RootLayout;
